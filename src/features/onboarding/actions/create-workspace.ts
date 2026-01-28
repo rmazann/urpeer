@@ -31,16 +31,29 @@ export const createWorkspace = async (
       return { success: false, error: 'You must be logged in' }
     }
 
-    // Ensure profile exists using database function (bypasses RLS)
-    const { error: ensureProfileError } = await supabase.rpc('ensure_profile_exists', {
-      p_user_id: user.id,
-      p_email: user.email || '',
-      p_full_name: user.user_metadata?.full_name || null,
-    })
+    // Ensure profile exists (trigger might not have run)
+    const { data: existingProfile } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('id', user.id)
+      .single()
 
-    if (ensureProfileError) {
-      logger.error('Failed to ensure profile exists', { action: 'createWorkspace', userId: user.id }, ensureProfileError)
-      return { success: false, error: 'Failed to create your profile. Please contact support.' }
+    if (!existingProfile) {
+      logger.info('Profile not found, creating...', { action: 'createWorkspace', userId: user.id })
+
+      const { error: createProfileError } = await supabase
+        .from('profiles')
+        .insert({
+          id: user.id,
+          email: user.email || '',
+          full_name: user.user_metadata?.full_name || user.email || '',
+          role: 'voter',
+        })
+
+      if (createProfileError) {
+        logger.error('Failed to create profile', { action: 'createWorkspace', userId: user.id }, createProfileError)
+        return { success: false, error: 'Failed to create your profile. Please contact support.' }
+      }
     }
 
     // Validate input
@@ -80,15 +93,32 @@ export const createWorkspace = async (
     return { success: false, error: 'Failed to create workspace' }
   }
 
-  // Update user profile with workspace_id using database function (bypasses RLS)
-  const { error: setupError } = await supabase.rpc('setup_user_workspace', {
-    p_user_id: user.id,
-    p_workspace_id: workspace.id,
-  })
+  // Update user profile with workspace_id and make them admin
+  const { error: profileError } = await supabase
+    .from('profiles')
+    .update({
+      workspace_id: workspace.id,
+      role: 'admin',
+    })
+    .eq('id', user.id)
 
-  if (setupError) {
-    logger.error('Failed to setup user workspace', { action: 'createWorkspace', userId: user.id, workspaceId: workspace.id }, setupError)
-    return { success: false, error: 'Failed to setup your workspace. Please try again.' }
+  if (profileError) {
+    logger.error('Failed to update profile with workspace', { action: 'createWorkspace', userId: user.id, workspaceId: workspace.id }, profileError)
+
+    // Try upsert as fallback - profile might not exist
+    const { error: upsertError } = await supabase
+      .from('profiles')
+      .upsert({
+        id: user.id,
+        email: user.email || '',
+        workspace_id: workspace.id,
+        role: 'admin',
+      })
+
+    if (upsertError) {
+      logger.error('Failed to upsert profile', { action: 'createWorkspace', userId: user.id, workspaceId: workspace.id }, upsertError)
+      return { success: false, error: 'Failed to setup your profile. Please try again.' }
+    }
   }
 
   revalidatePath('/')
