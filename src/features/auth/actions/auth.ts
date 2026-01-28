@@ -59,8 +59,21 @@ export const signup = async (
     return { error: 'Failed to create account' }
   }
 
+  // Create profile for the new user
+  const { error: profileError } = await supabase.from('profiles').insert({
+    id: authData.user.id,
+    email: email,
+    full_name: fullName,
+    role: 'voter',
+  })
+
+  if (profileError) {
+    console.error('Error creating profile:', profileError)
+    // Don't fail signup if profile creation fails
+  }
+
   revalidatePath('/', 'layout')
-  redirect('/feedback')
+  redirect('/onboarding')
 }
 
 export const login = async (
@@ -82,13 +95,29 @@ export const login = async (
 
   const { email, password } = result.data
 
-  const { error } = await supabase.auth.signInWithPassword({
+  const { data: authData, error } = await supabase.auth.signInWithPassword({
     email,
     password,
   })
 
   if (error) {
     return { error: error.message }
+  }
+
+  // Check if user has completed onboarding (has a workspace)
+  if (authData.user) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('workspace_id')
+      .eq('id', authData.user.id)
+      .single()
+
+    revalidatePath('/', 'layout')
+
+    // If no workspace, redirect to onboarding
+    if (!profile?.workspace_id) {
+      redirect('/onboarding')
+    }
   }
 
   revalidatePath('/', 'layout')

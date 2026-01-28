@@ -1,0 +1,116 @@
+'use server'
+
+import { createClient } from '@/lib/supabase/server'
+import { revalidatePath } from 'next/cache'
+
+export type CreateWorkspaceInput = {
+  name: string
+  slug: string
+  website?: string
+}
+
+export type CreateWorkspaceResult = {
+  success: boolean
+  error?: string
+  workspaceId?: string
+}
+
+export const createWorkspace = async (
+  input: CreateWorkspaceInput
+): Promise<CreateWorkspaceResult> => {
+  const supabase = await createClient()
+
+  // Check if user is authenticated
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) {
+    return { success: false, error: 'You must be logged in' }
+  }
+
+  // Validate input
+  if (!input.name || input.name.length < 2) {
+    return { success: false, error: 'Workspace name must be at least 2 characters' }
+  }
+
+  if (!input.slug || input.slug.length < 3) {
+    return { success: false, error: 'Subdomain must be at least 3 characters' }
+  }
+
+  // Check if slug is available
+  const { data: existingWorkspace } = await supabase
+    .from('workspaces')
+    .select('id')
+    .eq('slug', input.slug)
+    .single()
+
+  if (existingWorkspace) {
+    return { success: false, error: 'This subdomain is already taken' }
+  }
+
+  // Create workspace
+  const { data: workspace, error: workspaceError } = await supabase
+    .from('workspaces')
+    .insert({
+      name: input.name,
+      slug: input.slug,
+      website: input.website || null,
+      owner_id: user.id,
+    })
+    .select('id')
+    .single()
+
+  if (workspaceError) {
+    console.error('Error creating workspace:', workspaceError)
+    return { success: false, error: 'Failed to create workspace' }
+  }
+
+  // Update user profile with workspace_id and make them admin
+  const { error: profileError } = await supabase
+    .from('profiles')
+    .update({
+      workspace_id: workspace.id,
+      role: 'admin',
+    })
+    .eq('id', user.id)
+
+  if (profileError) {
+    console.error('Error updating profile:', profileError)
+    // Don't fail the whole operation, workspace is created
+  }
+
+  revalidatePath('/')
+  return { success: true, workspaceId: workspace.id }
+}
+
+export type CheckSlugResult = {
+  available: boolean
+}
+
+export const checkSlugAvailability = async (slug: string): Promise<CheckSlugResult> => {
+  const supabase = await createClient()
+
+  // Validate slug format
+  const sanitizedSlug = slug
+    .toLowerCase()
+    .replace(/[^a-z0-9-]/g, '')
+
+  if (sanitizedSlug.length < 3) {
+    return { available: false }
+  }
+
+  // Reserved slugs
+  const reservedSlugs = ['admin', 'api', 'www', 'app', 'dashboard', 'help', 'support', 'feedback', 'roadmap', 'changelog']
+  if (reservedSlugs.includes(sanitizedSlug)) {
+    return { available: false }
+  }
+
+  const { data: existingWorkspace } = await supabase
+    .from('workspaces')
+    .select('id')
+    .eq('slug', sanitizedSlug)
+    .single()
+
+  return { available: !existingWorkspace }
+}

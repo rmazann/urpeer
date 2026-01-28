@@ -344,9 +344,10 @@ export type Database = {
           id: string
           logo_url: string | null
           name: string
-          owner_id: string
+          owner_id: string | null
           slug: string
           updated_at: string | null
+          website: string | null
         }
         Insert: {
           created_at?: string | null
@@ -354,9 +355,10 @@ export type Database = {
           id?: string
           logo_url?: string | null
           name: string
-          owner_id: string
+          owner_id?: string | null
           slug: string
           updated_at?: string | null
+          website?: string | null
         }
         Update: {
           created_at?: string | null
@@ -364,9 +366,10 @@ export type Database = {
           id?: string
           logo_url?: string | null
           name?: string
-          owner_id?: string
+          owner_id?: string | null
           slug?: string
           updated_at?: string | null
+          website?: string | null
         }
         Relationships: []
       }

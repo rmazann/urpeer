@@ -41,26 +41,49 @@ export async function middleware(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  // Protect admin routes - redirect to login if not authenticated
-  if (request.nextUrl.pathname.startsWith('/admin')) {
+  // Protect onboarding route - must be logged in
+  if (request.nextUrl.pathname === '/onboarding') {
     if (!user) {
       const url = request.nextUrl.clone()
       url.pathname = '/login'
       return NextResponse.redirect(url)
     }
+    return supabaseResponse
+  }
 
-    // Check if user is admin
+  // Check if logged-in user needs to complete onboarding
+  if (user) {
     const { data: profile } = await supabase
       .from('profiles')
-      .select('role')
+      .select('workspace_id, role')
       .eq('id', user.id)
       .single()
 
-    if (profile?.role !== 'admin') {
+    // If user has no workspace and not on excluded routes, redirect to onboarding
+    const excludedPaths = ['/onboarding', '/login', '/signup', '/api']
+    const isExcludedPath = excludedPaths.some(path => request.nextUrl.pathname.startsWith(path))
+
+    if (!profile?.workspace_id && !isExcludedPath) {
       const url = request.nextUrl.clone()
-      url.pathname = '/feedback'
+      url.pathname = '/onboarding'
       return NextResponse.redirect(url)
     }
+
+    // Protect admin routes
+    if (request.nextUrl.pathname.startsWith('/admin')) {
+      if (profile?.role !== 'admin') {
+        const url = request.nextUrl.clone()
+        url.pathname = '/feedback'
+        return NextResponse.redirect(url)
+      }
+    }
+  }
+
+  // Protect admin routes - redirect to login if not authenticated
+  if (request.nextUrl.pathname.startsWith('/admin') && !user) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/login'
+    return NextResponse.redirect(url)
   }
 
   // Protect profile route
