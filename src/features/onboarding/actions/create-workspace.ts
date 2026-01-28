@@ -19,16 +19,17 @@ export type CreateWorkspaceResult = {
 export const createWorkspace = async (
   input: CreateWorkspaceInput
 ): Promise<CreateWorkspaceResult> => {
-  const supabase = await createClient()
+  try {
+    const supabase = await createClient()
 
-  // Check if user is authenticated
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+    // Check if user is authenticated
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
 
-  if (!user) {
-    return { success: false, error: 'You must be logged in' }
-  }
+    if (!user) {
+      return { success: false, error: 'You must be logged in' }
+    }
 
   // Validate input
   if (!input.name || input.name.length < 2) {
@@ -83,6 +84,10 @@ export const createWorkspace = async (
 
   revalidatePath('/')
   return { success: true, workspaceId: workspace.id }
+  } catch (error) {
+    logger.error('Unexpected error in createWorkspace', { action: 'createWorkspace' }, error as Error)
+    return { success: false, error: 'An unexpected error occurred' }
+  }
 }
 
 export type CheckSlugResult = {

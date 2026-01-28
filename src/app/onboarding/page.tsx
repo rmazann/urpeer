@@ -106,17 +106,23 @@ export default function OnboardingPage() {
   const handleComplete = async () => {
     setIsLoading(true)
 
-    const result = await createWorkspace({
-      name: formData.name,
-      slug: formData.slug,
-      website: formData.website || undefined,
-    })
+    try {
+      const result = await createWorkspace({
+        name: formData.name,
+        slug: formData.slug,
+        website: formData.website || undefined,
+      })
 
-    if (result.success) {
-      toast.success('Workspace created successfully!')
-      router.push('/feedback')
-    } else {
-      toast.error(result.error || 'Failed to create workspace')
+      if (result.success) {
+        toast.success('Workspace created successfully!')
+        router.push('/feedback')
+      } else {
+        toast.error(result.error || 'Failed to create workspace')
+        setIsLoading(false)
+      }
+    } catch (error) {
+      console.error('Onboarding error:', error)
+      toast.error('An unexpected error occurred. Please try again.')
       setIsLoading(false)
     }
   }
