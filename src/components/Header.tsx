@@ -5,19 +5,25 @@ import { MobileMenu } from '@/components/MobileMenu'
 import Link from 'next/link'
 
 export const Header = async () => {
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
+  let user = null
   let profile = null
-  if (user) {
-    const { data } = await supabase
-      .from('profiles')
-      .select('full_name, role')
-      .eq('id', user.id)
-      .single()
-    profile = data
+
+  try {
+    const supabase = await createClient()
+    const { data } = await supabase.auth.getUser()
+    user = data.user
+
+    if (user) {
+      const { data: profileData } = await supabase
+        .from('profiles')
+        .select('full_name, role')
+        .eq('id', user.id)
+        .single()
+      profile = profileData
+    }
+  } catch (error) {
+    console.error('Error in Header:', error)
+    // Continue with null user/profile - header will show logged out state
   }
 
   const isAdmin = profile?.role === 'admin'
