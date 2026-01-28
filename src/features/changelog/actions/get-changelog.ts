@@ -22,7 +22,7 @@ export const getChangelogEntries = async (
     .select(
       `
       *,
-      profiles!changelog_entries_author_id_fkey(id, full_name),
+      profiles(id, full_name),
       changelog_feedback_links(
         feedback(id, title)
       )
@@ -63,7 +63,7 @@ export const getChangelogEntryById = async (
     .select(
       `
       *,
-      profiles!changelog_entries_author_id_fkey(id, full_name),
+      profiles(id, full_name),
       changelog_feedback_links(
         feedback(id, title)
       )
@@ -87,7 +87,7 @@ export const getChangelogForRSS = async (): Promise<ChangelogEntryWithDetails[]>
     .select(
       `
       *,
-      profiles!changelog_entries_author_id_fkey(id, full_name),
+      profiles(id, full_name),
       changelog_feedback_links(
         feedback(id, title)
       )

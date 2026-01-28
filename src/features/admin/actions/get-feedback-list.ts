@@ -26,7 +26,7 @@ export const getAdminFeedbackList = async (
 
   let query = supabase
     .from('feedback')
-    .select('*, profiles!feedback_author_id_fkey(id, full_name, avatar_url)', { count: 'exact' })
+    .select('*, profiles(id, full_name, avatar_url)', { count: 'exact' })
 
   // Apply filters
   if (status && status !== 'all') {

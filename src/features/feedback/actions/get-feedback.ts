@@ -17,7 +17,7 @@ export const getFeedback = async (filters: FeedbackFilters = {}): Promise<Feedba
 
   let query = supabase
     .from('feedback')
-    .select('*, profiles!feedback_author_id_fkey(id, full_name, avatar_url)')
+    .select('*, profiles(id, full_name, avatar_url)')
 
   // Apply status filter
   if (filters.status && filters.status !== 'all') {
@@ -76,7 +76,7 @@ export const getFeedbackById = async (id: string) => {
 
   const { data: feedback, error } = await supabase
     .from('feedback')
-    .select('*, profiles!feedback_author_id_fkey(id, full_name, avatar_url)')
+    .select('*, profiles(id, full_name, avatar_url)')
     .eq('id', id)
     .single()
 

@@ -10,7 +10,7 @@ export const getCommentsByFeedbackId = async (
 
   const { data: comments, error } = await supabase
     .from('comments')
-    .select('*, profiles!comments_author_id_fkey(id, full_name, avatar_url)')
+    .select('*, profiles(id, full_name, avatar_url)')
     .eq('feedback_id', feedbackId)
     .order('created_at', { ascending: true })
 
