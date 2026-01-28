@@ -31,7 +31,32 @@ export const createWorkspace = async (
       return { success: false, error: 'You must be logged in' }
     }
 
-  // Validate input
+    // Ensure profile exists (trigger might not have run)
+    const { data: existingProfile } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('id', user.id)
+      .single()
+
+    if (!existingProfile) {
+      logger.info('Profile not found, creating...', { action: 'createWorkspace', userId: user.id })
+
+      const { error: createProfileError } = await supabase
+        .from('profiles')
+        .insert({
+          id: user.id,
+          email: user.email || '',
+          full_name: user.user_metadata?.full_name || user.email || '',
+          role: 'voter',
+        })
+
+      if (createProfileError) {
+        logger.error('Failed to create profile', { action: 'createWorkspace', userId: user.id }, createProfileError)
+        return { success: false, error: 'Failed to create your profile. Please contact support.' }
+      }
+    }
+
+    // Validate input
   if (!input.name || input.name.length < 2) {
     return { success: false, error: 'Workspace name must be at least 2 characters' }
   }
