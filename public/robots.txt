@@ -1,0 +1,15 @@
+# robots.txt for Urpeer.com
+
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://urpeer.com/sitemap.xml
+
+# Disallow admin and API routes
+Disallow: /admin
+Disallow: /api/
+Disallow: /profile
+
+# Allow RSS feed
+Allow: /api/changelog/rss

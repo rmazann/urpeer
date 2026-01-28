@@ -38,3 +38,13 @@
 - **Planning:** Before implementing a complex feature (e.g., "Roadmap drag-and-drop ordering"), first design the algorithm and data update strategy in `/plan` mode or within a "Thinking" block.
 - **Change Management:** When refactoring existing code, prioritize preserving working functionality. If unsure, suggest writing tests.
 - **File Access:** Never attempt to read the `node_modules`, `.next`, or `.git` directories.
+- **Notifications:** Always send macOS notifications using `terminal-notifier` in the following scenarios:
+  - **Request for Input:** When user input or permission is needed, use:
+    ```bash
+    terminal-notifier -title "🔔 Claude Code: request" -message "[Short summary of what is needed]"
+    ```
+  - **Task Completion:** When a task is successfully completed, use:
+    ```bash
+    terminal-notifier -title "✅ Claude Code: done" -message "[Short summary of what was completed]"
+    ```
+  - Customize the message to be concise and informative about the specific situation.
