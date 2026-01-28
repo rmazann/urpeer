@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import type { ChangelogEntryWithDetails } from '@/lib/supabase/types'
+import { logger } from '@/lib/logger'
 
 export type PaginatedChangelog = {
   entries: ChangelogEntryWithDetails[]
@@ -40,7 +41,7 @@ export const getChangelogEntries = async (
   const { data: entries, error, count } = await query
 
   if (error) {
-    console.error('Error fetching changelog entries:', error)
+    logger.error('Failed to fetch changelog entries', { action: 'getChangelogEntries', page, limit }, error)
     return { entries: [], totalCount: 0, hasMore: false }
   }
 
@@ -98,7 +99,7 @@ export const getChangelogForRSS = async (): Promise<ChangelogEntryWithDetails[]>
     .limit(20)
 
   if (error) {
-    console.error('Error fetching changelog for RSS:', error)
+    logger.error('Failed to fetch changelog for RSS', { action: 'getChangelogForRSS' }, error)
     return []
   }
 

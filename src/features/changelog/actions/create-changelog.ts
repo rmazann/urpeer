@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { createChangelogSchema } from '@/lib/validations/changelog'
+import { logger } from '@/lib/logger'
 
 export type CreateChangelogState = {
   error?: string
@@ -84,7 +85,7 @@ export const createChangelogEntry = async (
     .single()
 
   if (error) {
-    console.error('Error creating changelog entry:', error)
+    logger.error('Failed to create changelog entry', { action: 'createChangelogEntry', category }, error)
     return { error: 'Failed to create changelog entry' }
   }
 

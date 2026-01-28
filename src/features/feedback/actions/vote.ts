@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
+import { logger } from '@/lib/logger'
 
 export type VoteResult = {
   success: boolean
@@ -39,7 +40,7 @@ export const toggleVote = async (feedbackId: string): Promise<VoteResult> => {
       .eq('user_id', user.id)
 
     if (deleteError) {
-      console.error('Error removing vote:', deleteError)
+      logger.error('Failed to remove vote', { action: 'toggleVote', feedbackId, userId: user.id }, deleteError)
       return { success: false, error: 'Failed to remove vote' }
     }
 
@@ -66,7 +67,7 @@ export const toggleVote = async (feedbackId: string): Promise<VoteResult> => {
     })
 
     if (insertError) {
-      console.error('Error adding vote:', insertError)
+      logger.error('Failed to add vote', { action: 'toggleVote', feedbackId, userId: user.id }, insertError)
       return { success: false, error: 'Failed to add vote' }
     }
 

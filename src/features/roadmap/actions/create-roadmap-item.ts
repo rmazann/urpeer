@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { createRoadmapItemSchema } from '@/lib/validations/roadmap'
+import { logger } from '@/lib/logger'
 
 export type CreateRoadmapItemState = {
   error?: string
@@ -112,7 +113,7 @@ export const createRoadmapItem = async (
   })
 
   if (error) {
-    console.error('Error creating roadmap item:', error)
+    logger.error('Failed to create roadmap item', { action: 'createRoadmapItem', status }, error)
     return { error: 'Failed to create roadmap item' }
   }
 

@@ -1,5 +1,6 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
+import { logger } from '@/lib/logger'
 
 export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
@@ -11,7 +12,11 @@ export async function middleware(request: NextRequest) {
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
   if (!supabaseUrl || !supabaseAnonKey) {
-    console.error('Missing Supabase environment variables')
+    logger.error('Missing Supabase environment variables', {
+      action: 'middleware',
+      hasUrl: !!supabaseUrl,
+      hasKey: !!supabaseAnonKey,
+    })
     return supabaseResponse
   }
 
@@ -60,7 +65,7 @@ export async function middleware(request: NextRequest) {
       .single()
 
     // If user has no workspace and not on excluded routes, redirect to onboarding
-    const excludedPaths = ['/onboarding', '/login', '/signup', '/api']
+    const excludedPaths = ['/onboarding', '/login', '/signup', '/api', '/auth']
     const isExcludedPath = excludedPaths.some(path => request.nextUrl.pathname.startsWith(path))
 
     if (!profile?.workspace_id && !isExcludedPath) {

@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
+import { logger } from '@/lib/logger'
 
 export type UpdateChangelogResult = {
   success: boolean
@@ -40,7 +41,7 @@ export const updateChangelogEntry = async (
     .eq('id', entryId)
 
   if (error) {
-    console.error('Error updating changelog entry:', error)
+    logger.error('Failed to update changelog entry', { action: 'updateChangelogEntry', entryId }, error)
     return { success: false, error: 'Failed to update changelog entry' }
   }
 
@@ -83,7 +84,7 @@ export const publishChangelogEntry = async (
     .eq('id', entryId)
 
   if (error) {
-    console.error('Error publishing changelog entry:', error)
+    logger.error('Failed to publish changelog entry', { action: 'publishChangelogEntry', entryId }, error)
     return { success: false, error: 'Failed to publish changelog entry' }
   }
 
@@ -126,7 +127,7 @@ export const unpublishChangelogEntry = async (
     .eq('id', entryId)
 
   if (error) {
-    console.error('Error unpublishing changelog entry:', error)
+    logger.error('Failed to unpublish changelog entry', { action: 'unpublishChangelogEntry', entryId }, error)
     return { success: false, error: 'Failed to unpublish changelog entry' }
   }
 

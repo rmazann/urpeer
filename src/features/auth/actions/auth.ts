@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { z } from 'zod'
+import { logger } from '@/lib/logger'
 
 const signupSchema = z.object({
   email: z.string().email('Please enter a valid email'),
@@ -68,7 +69,10 @@ export const signup = async (
   })
 
   if (profileError) {
-    console.error('Error creating profile:', profileError)
+    logger.error('Failed to create profile during signup', {
+      action: 'signup',
+      userId: authData.user.id,
+    }, profileError)
     // Don't fail signup if profile creation fails
   }
 

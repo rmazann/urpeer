@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { createFeedbackSchema } from '@/lib/validations/feedback'
+import { logger } from '@/lib/logger'
 
 export type CreateFeedbackState = {
   error?: string
@@ -71,7 +72,7 @@ export const createFeedback = async (
   })
 
   if (error) {
-    console.error('Error creating feedback:', error)
+    logger.error('Failed to create feedback', { action: 'createFeedback', userId: user.id, category }, error)
     return { error: 'Failed to create feedback. Please try again.' }
   }
 

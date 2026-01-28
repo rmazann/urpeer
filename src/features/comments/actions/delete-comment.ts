@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
+import { logger } from '@/lib/logger'
 
 export type DeleteCommentResult = {
   success: boolean
@@ -42,7 +43,7 @@ export const deleteComment = async (
   const { error } = await query
 
   if (error) {
-    console.error('Error deleting comment:', error)
+    logger.error('Failed to delete comment', { action: 'deleteComment', commentId, feedbackId }, error)
     return { success: false, error: 'Failed to delete comment' }
   }
 

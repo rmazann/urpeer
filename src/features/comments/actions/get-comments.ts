@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import type { CommentWithAuthor } from '@/lib/supabase/types'
+import { logger } from '@/lib/logger'
 
 export const getCommentsByFeedbackId = async (
   feedbackId: string
@@ -15,7 +16,7 @@ export const getCommentsByFeedbackId = async (
     .order('created_at', { ascending: true })
 
   if (error) {
-    console.error('Error fetching comments:', error)
+    logger.error('Failed to fetch comments', { action: 'getCommentsByFeedbackId', feedbackId }, error)
     return []
   }
 

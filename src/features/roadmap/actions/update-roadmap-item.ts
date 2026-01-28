@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
+import { logger } from '@/lib/logger'
 
 export type UpdateRoadmapResult = {
   success: boolean
@@ -44,7 +45,7 @@ export const updateRoadmapItemStatus = async (
     .eq('id', itemId)
 
   if (error) {
-    console.error('Error updating roadmap item:', error)
+    logger.error('Failed to update roadmap item', { action: 'updateRoadmapItem', itemId }, error)
     return { success: false, error: 'Failed to update roadmap item' }
   }
 
@@ -84,7 +85,7 @@ export const reorderRoadmapItems = async (
       .eq('id', item.id)
 
     if (error) {
-      console.error('Error reordering roadmap item:', error)
+      logger.error('Failed to reorder roadmap item', { action: 'reorderRoadmapItems', itemId: item.id }, error)
       return { success: false, error: 'Failed to reorder items' }
     }
   }
@@ -125,7 +126,7 @@ export const updateRoadmapItem = async (
     .eq('id', itemId)
 
   if (error) {
-    console.error('Error updating roadmap item:', error)
+    logger.error('Failed to update roadmap item', { action: 'updateRoadmapItem', itemId }, error)
     return { success: false, error: 'Failed to update roadmap item' }
   }
 

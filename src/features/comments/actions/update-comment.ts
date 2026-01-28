@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { updateCommentSchema } from '@/lib/validations/comment'
+import { logger } from '@/lib/logger'
 
 export type UpdateCommentResult = {
   success: boolean
@@ -43,7 +44,7 @@ export const updateComment = async (
     .eq('author_id', user.id)
 
   if (error) {
-    console.error('Error updating comment:', error)
+    logger.error('Failed to update comment', { action: 'updateComment', commentId, feedbackId }, error)
     return { success: false, error: 'Failed to update comment' }
   }
 

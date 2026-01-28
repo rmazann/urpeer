@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import type { RoadmapItemWithFeedback } from '@/lib/supabase/types'
+import { logger } from '@/lib/logger'
 
 export type RoadmapByStatus = {
   planned: RoadmapItemWithFeedback[]
@@ -18,7 +19,7 @@ export const getRoadmapItems = async (): Promise<RoadmapByStatus> => {
     .order('display_order', { ascending: true })
 
   if (error) {
-    console.error('Error fetching roadmap items:', error)
+    logger.error('Failed to fetch roadmap items', { action: 'getRoadmapItems' }, error)
     return {
       planned: [],
       'in-progress': [],

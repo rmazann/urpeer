@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
+import { logger } from '@/lib/logger'
 
 export type LinkFeedbackResult = {
   success: boolean
@@ -52,7 +53,7 @@ export const linkFeedbackToChangelog = async (
   })
 
   if (error) {
-    console.error('Error linking feedback:', error)
+    logger.error('Failed to link feedback', { action: 'linkFeedbackToChangelog', changelogId, feedbackId }, error)
     return { success: false, error: 'Failed to link feedback' }
   }
 
@@ -94,7 +95,7 @@ export const unlinkFeedbackFromChangelog = async (
     .eq('feedback_id', feedbackId)
 
   if (error) {
-    console.error('Error unlinking feedback:', error)
+    logger.error('Failed to unlink feedback', { action: 'unlinkFeedbackFromChangelog', changelogId, feedbackId }, error)
     return { success: false, error: 'Failed to unlink feedback' }
   }
 

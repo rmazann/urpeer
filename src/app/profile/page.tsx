@@ -6,6 +6,8 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
+import Link from 'next/link'
+import { Bell, ChevronRight } from 'lucide-react'
 
 const updateProfile = async (formData: FormData): Promise<void> => {
   'use server'
@@ -85,6 +87,30 @@ export default async function ProfilePage() {
             </div>
             <Button type="submit">Update Profile</Button>
           </form>
+        </CardContent>
+      </Card>
+
+      <Card className="mt-6">
+        <CardHeader>
+          <CardTitle>Preferences</CardTitle>
+          <CardDescription>Manage your notification and display preferences</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <Link
+            href="/profile/notifications"
+            className="flex items-center justify-between rounded-lg border p-4 transition-colors hover:bg-muted/50"
+          >
+            <div className="flex items-center gap-3">
+              <Bell className="h-5 w-5 text-muted-foreground" />
+              <div>
+                <p className="font-medium">Notification Settings</p>
+                <p className="text-sm text-muted-foreground">
+                  Manage your email notification preferences
+                </p>
+              </div>
+            </div>
+            <ChevronRight className="h-5 w-5 text-muted-foreground" />
+          </Link>
         </CardContent>
       </Card>
     </div>

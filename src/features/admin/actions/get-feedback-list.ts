@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import type { FeedbackWithAuthor } from '@/lib/supabase/types'
+import { logger } from '@/lib/logger'
 
 export type AdminFeedbackFilters = {
   status?: string
@@ -49,7 +50,7 @@ export const getAdminFeedbackList = async (
   const { data, error, count } = await query
 
   if (error) {
-    console.error('Error fetching admin feedback list:', error)
+    logger.error('Failed to fetch admin feedback list', { action: 'getAdminFeedbackList', page, limit }, error)
     return { items: [], totalCount: 0, hasMore: false }
   }
 

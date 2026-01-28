@@ -3,6 +3,8 @@
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { updateFeedbackSchema } from '@/lib/validations/feedback'
+import { sendStatusChangeNotification } from '@/features/notifications/actions/send-notification'
+import { logger } from '@/lib/logger'
 
 export type UpdateFeedbackResult = {
   success: boolean
@@ -34,6 +36,15 @@ export const updateFeedbackStatus = async (
     return { success: false, error: 'Only admins can change feedback status' }
   }
 
+  // Get current feedback info for notification
+  const { data: feedback } = await supabase
+    .from('feedback')
+    .select('author_id, title, status')
+    .eq('id', feedbackId)
+    .single()
+
+  const oldStatus = feedback?.status
+
   // Update status
   const { error } = await supabase
     .from('feedback')
@@ -41,8 +52,19 @@ export const updateFeedbackStatus = async (
     .eq('id', feedbackId)
 
   if (error) {
-    console.error('Error updating feedback status:', error)
+    logger.error('Failed to update feedback status', { action: 'updateFeedbackStatus', feedbackId, status }, error)
     return { success: false, error: 'Failed to update status' }
+  }
+
+  // Send email notification to feedback author (async, don't wait)
+  if (feedback && oldStatus !== status) {
+    sendStatusChangeNotification(
+      feedback.author_id,
+      feedbackId,
+      feedback.title,
+      oldStatus || 'pending',
+      status
+    ).catch((err) => logger.error('Failed to send status change notification', { action: 'updateFeedbackStatus', feedbackId }, err))
   }
 
   revalidatePath('/feedback')
@@ -101,7 +123,7 @@ export const updateFeedback = async (
     .eq('id', feedbackId)
 
   if (error) {
-    console.error('Error updating feedback:', error)
+    logger.error('Failed to update feedback', { action: 'updateFeedback', feedbackId }, error)
     return { success: false, error: 'Failed to update feedback' }
   }
 

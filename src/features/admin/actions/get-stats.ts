@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { logger } from '@/lib/logger'
 
 export type DashboardStats = {
   totalFeedback: number
@@ -132,7 +133,7 @@ export const getTopVotedFeedback = async (limit: number = 10): Promise<TopVotedF
     .limit(limit)
 
   if (error) {
-    console.error('Error fetching top voted feedback:', error)
+    logger.error('Failed to fetch top voted feedback', { action: 'getTopVotedFeedback', limit }, error)
     return []
   }
 

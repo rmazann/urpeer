@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import type { FeedbackWithAuthor } from '@/lib/supabase/types'
+import { logger } from '@/lib/logger'
 
 export type FeedbackFilters = {
   status?: string
@@ -39,7 +40,12 @@ export const getFeedback = async (filters: FeedbackFilters = {}): Promise<Feedba
   const { data: feedbackList, error } = await query
 
   if (error) {
-    console.error('Error fetching feedback:', error)
+    logger.error('Failed to fetch feedback list', {
+      action: 'getFeedback',
+      status: filters.status,
+      category: filters.category,
+      sortBy: filters.sortBy,
+    }, error)
     return []
   }
 

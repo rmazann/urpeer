@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
+import { logger } from '@/lib/logger'
 
 export type DeleteFeedbackResult = {
   success: boolean
@@ -46,7 +47,7 @@ export const deleteFeedback = async (
   const { error } = await supabase.from('feedback').delete().eq('id', feedbackId)
 
   if (error) {
-    console.error('Error deleting feedback:', error)
+    logger.error('Failed to delete feedback', { action: 'deleteFeedback', feedbackId, userId: user.id }, error)
     return { success: false, error: 'Failed to delete feedback' }
   }
 

@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
+import { logger } from '@/lib/logger'
 
 export type DeleteRoadmapResult = {
   success: boolean
@@ -34,7 +35,7 @@ export const deleteRoadmapItem = async (itemId: string): Promise<DeleteRoadmapRe
   const { error } = await supabase.from('roadmap_items').delete().eq('id', itemId)
 
   if (error) {
-    console.error('Error deleting roadmap item:', error)
+    logger.error('Failed to delete roadmap item', { action: 'deleteRoadmapItem', itemId }, error)
     return { success: false, error: 'Failed to delete roadmap item' }
   }
 

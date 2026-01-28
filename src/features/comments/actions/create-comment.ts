@@ -3,6 +3,8 @@
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { createCommentSchema } from '@/lib/validations/comment'
+import { sendNewCommentNotification } from '@/features/notifications/actions/send-notification'
+import { logger } from '@/lib/logger'
 
 export type CreateCommentState = {
   error?: string
@@ -44,6 +46,13 @@ export const createComment = async (
 
   const { content } = validationResult.data
 
+  // Get feedback info for notification
+  const { data: feedback } = await supabase
+    .from('feedback')
+    .select('author_id, title')
+    .eq('id', feedbackId)
+    .single()
+
   // Insert comment
   const { error } = await supabase.from('comments').insert({
     content,
@@ -52,8 +61,19 @@ export const createComment = async (
   })
 
   if (error) {
-    console.error('Error creating comment:', error)
+    logger.error('Failed to create comment', { action: 'createComment', feedbackId, userId: user.id }, error)
     return { error: 'Failed to create comment. Please try again.' }
+  }
+
+  // Send email notification to feedback author (async, don't wait)
+  if (feedback) {
+    sendNewCommentNotification(
+      feedback.author_id,
+      user.id,
+      feedbackId,
+      feedback.title,
+      content
+    ).catch((err) => logger.error('Failed to send comment notification', { action: 'createComment', feedbackId }, err))
   }
 
   revalidatePath(`/feedback/${feedbackId}`)

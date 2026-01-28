@@ -1,6 +1,7 @@
 'use client'
 
 import { signup, type AuthState } from '@/features/auth/actions/auth'
+import { OAuthButtons } from '@/features/auth/components/OAuthButtons'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -26,7 +27,20 @@ export default function SignupPage() {
           <CardTitle className="text-2xl">Create an account</CardTitle>
           <CardDescription>Start sharing your feedback today</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-6">
+          <OAuthButtons mode="signup" />
+
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-background px-2 text-muted-foreground">
+                Or continue with email
+              </span>
+            </div>
+          </div>
+
           <form action={formAction} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="fullName">Full Name</Label>
@@ -69,7 +83,7 @@ export default function SignupPage() {
               {isPending ? 'Creating account...' : 'Create Account'}
             </Button>
           </form>
-          <p className="mt-4 text-center text-sm text-muted-foreground">
+          <p className="text-center text-sm text-muted-foreground">
             Already have an account?{' '}
             <Link href="/login" className="text-primary underline-offset-4 hover:underline">
               Sign in

@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
+import { logger } from '@/lib/logger'
 
 export type DeleteChangelogResult = {
   success: boolean
@@ -45,7 +46,7 @@ export const deleteChangelogEntry = async (
     .eq('id', entryId)
 
   if (error) {
-    console.error('Error deleting changelog entry:', error)
+    logger.error('Failed to delete changelog entry', { action: 'deleteChangelogEntry', entryId }, error)
     return { success: false, error: 'Failed to delete changelog entry' }
   }
 

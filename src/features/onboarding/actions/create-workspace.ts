@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
+import { logger } from '@/lib/logger'
 
 export type CreateWorkspaceInput = {
   name: string
@@ -62,7 +63,7 @@ export const createWorkspace = async (
     .single()
 
   if (workspaceError) {
-    console.error('Error creating workspace:', workspaceError)
+    logger.error('Failed to create workspace', { action: 'createWorkspace', userId: user.id }, workspaceError)
     return { success: false, error: 'Failed to create workspace' }
   }
 
@@ -76,7 +77,7 @@ export const createWorkspace = async (
     .eq('id', user.id)
 
   if (profileError) {
-    console.error('Error updating profile:', profileError)
+    logger.error('Failed to update profile with workspace', { action: 'createWorkspace', userId: user.id, workspaceId: workspace.id }, profileError)
     // Don't fail the whole operation, workspace is created
   }
 
