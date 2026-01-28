@@ -115,7 +115,8 @@ export default function OnboardingPage() {
 
       if (result.success) {
         toast.success('Workspace created successfully!')
-        router.push('/feedback')
+        // Use window.location for hard redirect to ensure middleware re-runs
+        window.location.href = '/feedback'
       } else {
         toast.error(result.error || 'Failed to create workspace')
         setIsLoading(false)

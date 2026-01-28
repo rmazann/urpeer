@@ -79,7 +79,21 @@ export const createWorkspace = async (
 
   if (profileError) {
     logger.error('Failed to update profile with workspace', { action: 'createWorkspace', userId: user.id, workspaceId: workspace.id }, profileError)
-    // Don't fail the whole operation, workspace is created
+
+    // Try upsert as fallback - profile might not exist
+    const { error: upsertError } = await supabase
+      .from('profiles')
+      .upsert({
+        id: user.id,
+        email: user.email || '',
+        workspace_id: workspace.id,
+        role: 'admin',
+      })
+
+    if (upsertError) {
+      logger.error('Failed to upsert profile', { action: 'createWorkspace', userId: user.id, workspaceId: workspace.id }, upsertError)
+      return { success: false, error: 'Failed to setup your profile. Please try again.' }
+    }
   }
 
   revalidatePath('/')
