@@ -46,20 +46,20 @@ type FeedbackManagementTableProps = {
 
 const statusOptions = [
   { value: 'open', label: 'Open' },
-  { value: 'under-review', label: 'Under Review' },
+  { value: 'under_review', label: 'Under Review' },
   { value: 'planned', label: 'Planned' },
-  { value: 'in-progress', label: 'In Progress' },
+  { value: 'in_progress', label: 'In Progress' },
   { value: 'completed', label: 'Completed' },
-  { value: 'declined', label: 'Declined' },
+  { value: 'closed', label: 'Closed' },
 ]
 
 const statusColors: Record<string, string> = {
   open: 'bg-blue-100 text-blue-800',
-  'under-review': 'bg-yellow-100 text-yellow-800',
+  under_review: 'bg-yellow-100 text-yellow-800',
   planned: 'bg-purple-100 text-purple-800',
-  'in-progress': 'bg-orange-100 text-orange-800',
+  in_progress: 'bg-orange-100 text-orange-800',
   completed: 'bg-green-100 text-green-800',
-  declined: 'bg-gray-100 text-gray-800',
+  closed: 'bg-gray-100 text-gray-800',
 }
 
 export const FeedbackManagementTable = ({ items }: FeedbackManagementTableProps) => {

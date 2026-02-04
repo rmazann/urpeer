@@ -12,11 +12,11 @@ import {
 const statuses = [
   { value: 'all', label: 'All Statuses' },
   { value: 'open', label: 'Open' },
-  { value: 'under-review', label: 'Under Review' },
+  { value: 'under_review', label: 'Under Review' },
   { value: 'planned', label: 'Planned' },
-  { value: 'in-progress', label: 'In Progress' },
+  { value: 'in_progress', label: 'In Progress' },
   { value: 'completed', label: 'Completed' },
-  { value: 'declined', label: 'Declined' },
+  { value: 'closed', label: 'Closed' },
 ]
 
 const categories = [

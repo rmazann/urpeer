@@ -8,20 +8,20 @@ type FeedbackStatusChartProps = {
 
 const statusLabels: Record<string, string> = {
   open: 'Open',
-  'under-review': 'Under Review',
+  under_review: 'Under Review',
   planned: 'Planned',
-  'in-progress': 'In Progress',
+  in_progress: 'In Progress',
   completed: 'Completed',
-  declined: 'Declined',
+  closed: 'Closed',
 }
 
 const statusColors: Record<string, string> = {
   open: 'bg-blue-500',
-  'under-review': 'bg-yellow-500',
+  under_review: 'bg-yellow-500',
   planned: 'bg-purple-500',
-  'in-progress': 'bg-orange-500',
+  in_progress: 'bg-orange-500',
   completed: 'bg-green-500',
-  declined: 'bg-gray-500',
+  closed: 'bg-gray-500',
 }
 
 export const FeedbackStatusChart = ({ data }: FeedbackStatusChartProps) => {

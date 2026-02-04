@@ -35,7 +35,7 @@ describe('createRoadmapItemSchema', () => {
   })
 
   it('should accept all valid statuses', () => {
-    const statuses = ['planned', 'in-progress', 'completed']
+    const statuses = ['planned', 'in_progress', 'completed']
 
     statuses.forEach((status) => {
       const input = {

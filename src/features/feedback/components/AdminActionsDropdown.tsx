@@ -58,11 +58,11 @@ type AdminActionsDropdownProps = {
 
 const statusOptions = [
   { value: 'open', label: 'Open', icon: Clock },
-  { value: 'under-review', label: 'Under Review', icon: Clock },
+  { value: 'under_review', label: 'Under Review', icon: Clock },
   { value: 'planned', label: 'Planned', icon: Clock },
-  { value: 'in-progress', label: 'In Progress', icon: Clock },
+  { value: 'in_progress', label: 'In Progress', icon: Clock },
   { value: 'completed', label: 'Completed', icon: CheckCircle },
-  { value: 'declined', label: 'Declined', icon: XCircle },
+  { value: 'closed', label: 'Closed', icon: XCircle },
 ]
 
 export const AdminActionsDropdown = ({

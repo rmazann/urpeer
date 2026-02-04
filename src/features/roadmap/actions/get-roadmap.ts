@@ -6,7 +6,7 @@ import { logger } from '@/lib/logger'
 
 export type RoadmapByStatus = {
   planned: RoadmapItemWithFeedback[]
-  'in-progress': RoadmapItemWithFeedback[]
+  in_progress: RoadmapItemWithFeedback[]
   completed: RoadmapItemWithFeedback[]
 }
 
@@ -22,7 +22,7 @@ export const getRoadmapItems = async (): Promise<RoadmapByStatus> => {
     logger.error('Failed to fetch roadmap items', { action: 'getRoadmapItems' }, error)
     return {
       planned: [],
-      'in-progress': [],
+      in_progress: [],
       completed: [],
     }
   }
@@ -31,7 +31,7 @@ export const getRoadmapItems = async (): Promise<RoadmapByStatus> => {
 
   return {
     planned: roadmapItems.filter((item) => item.status === 'planned'),
-    'in-progress': roadmapItems.filter((item) => item.status === 'in-progress'),
+    in_progress: roadmapItems.filter((item) => item.status === 'in_progress'),
     completed: roadmapItems.filter((item) => item.status === 'completed'),
   }
 }

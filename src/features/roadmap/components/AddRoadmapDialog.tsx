@@ -99,7 +99,7 @@ export const AddRoadmapDialog = ({ feedbackOptions = [] }: AddRoadmapDialogProps
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="planned">Planned</SelectItem>
-                  <SelectItem value="in-progress">In Progress</SelectItem>
+                  <SelectItem value="in_progress">In Progress</SelectItem>
                   <SelectItem value="completed">Completed</SelectItem>
                 </SelectContent>
               </Select>

@@ -61,6 +61,7 @@ export const signup = async (
   }
 
   // Create profile for the new user
+  // Note: Profile creation is idempotent and will also be checked/created during onboarding
   const { error: profileError } = await supabase.from('profiles').insert({
     id: authData.user.id,
     email: email,
@@ -72,8 +73,13 @@ export const signup = async (
     logger.error('Failed to create profile during signup', {
       action: 'signup',
       userId: authData.user.id,
+      error: profileError.message,
+      code: profileError.code,
     }, profileError)
-    // Don't fail signup if profile creation fails
+
+    // Don't block signup if profile creation fails initially
+    // Profile will be created/verified during onboarding
+    // Database cleanup function will handle orphaned auth users periodically
   }
 
   revalidatePath('/', 'layout')

@@ -1,5 +1,4 @@
 export { AddChangelogDialog } from './AddChangelogDialog'
-export { AdminSidebar } from './AdminSidebar'
 export { ChangelogManagementTable } from './ChangelogManagementTable'
 export { FeedbackManagementTable } from './FeedbackManagementTable'
 export { FeedbackStatusChart } from './FeedbackStatusChart'

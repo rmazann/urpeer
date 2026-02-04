@@ -28,11 +28,11 @@ type RoadmapBoardProps = {
   isAdmin: boolean
 }
 
-type ColumnId = 'planned' | 'in-progress' | 'completed'
+type ColumnId = 'planned' | 'in_progress' | 'completed'
 
 const columns: { id: ColumnId; title: string }[] = [
   { id: 'planned', title: 'Planned' },
-  { id: 'in-progress', title: 'In Progress' },
+  { id: 'in_progress', title: 'In Progress' },
   { id: 'completed', title: 'Completed' },
 ]
 
@@ -56,7 +56,7 @@ export const RoadmapBoard = ({ initialItems, isAdmin }: RoadmapBoardProps) => {
 
   const findContainer = (id: string): ColumnId | null => {
     if (items.planned.some((item) => item.id === id)) return 'planned'
-    if (items['in-progress'].some((item) => item.id === id)) return 'in-progress'
+    if (items['in_progress'].some((item) => item.id === id)) return 'in_progress'
     if (items.completed.some((item) => item.id === id)) return 'completed'
     return null
   }
@@ -79,7 +79,7 @@ export const RoadmapBoard = ({ initialItems, isAdmin }: RoadmapBoardProps) => {
 
     // Check if dropping on a column
     let overContainer: ColumnId | null = null
-    if (['planned', 'in-progress', 'completed'].includes(overId)) {
+    if (['planned', 'in_progress', 'completed'].includes(overId)) {
       overContainer = overId as ColumnId
     } else {
       overContainer = findContainer(overId)
@@ -119,7 +119,7 @@ export const RoadmapBoard = ({ initialItems, isAdmin }: RoadmapBoardProps) => {
     const overId = over.id as string
 
     let overContainer: ColumnId | null = null
-    if (['planned', 'in-progress', 'completed'].includes(overId)) {
+    if (['planned', 'in_progress', 'completed'].includes(overId)) {
       overContainer = overId as ColumnId
     } else {
       overContainer = findContainer(overId)
@@ -147,7 +147,7 @@ export const RoadmapBoard = ({ initialItems, isAdmin }: RoadmapBoardProps) => {
     startTransition(async () => {
       const allItems = [
         ...items.planned.map((item, idx) => ({ id: item.id, display_order: idx, status: 'planned' })),
-        ...items['in-progress'].map((item, idx) => ({ id: item.id, display_order: idx, status: 'in-progress' })),
+        ...items['in_progress'].map((item, idx) => ({ id: item.id, display_order: idx, status: 'in_progress' })),
         ...items.completed.map((item, idx) => ({ id: item.id, display_order: idx, status: 'completed' })),
       ]
 

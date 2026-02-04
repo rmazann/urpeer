@@ -9,7 +9,7 @@ export const createRoadmapItemSchema = z.object({
     .string()
     .max(2000, 'Description must be less than 2000 characters')
     .optional(),
-  status: z.enum(['planned', 'in-progress', 'completed']).default('planned'),
+  status: z.enum(['planned', 'in_progress', 'completed']).default('planned'),
   feedback_id: z.string().uuid().optional().nullable(),
   eta: z.string().max(100).optional().nullable(),
 })
@@ -25,7 +25,7 @@ export const updateRoadmapItemSchema = z.object({
     .max(2000, 'Description must be less than 2000 characters')
     .optional()
     .nullable(),
-  status: z.enum(['planned', 'in-progress', 'completed']).optional(),
+  status: z.enum(['planned', 'in_progress', 'completed']).optional(),
   feedback_id: z.string().uuid().optional().nullable(),
   eta: z.string().max(100).optional().nullable(),
   display_order: z.number().int().min(0).optional(),
@@ -36,7 +36,7 @@ export const updateRoadmapOrderSchema = z.object({
     z.object({
       id: z.string().uuid(),
       display_order: z.number().int().min(0),
-      status: z.enum(['planned', 'in-progress', 'completed']),
+      status: z.enum(['planned', 'in_progress', 'completed']),
     })
   ),
 })

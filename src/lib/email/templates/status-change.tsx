@@ -22,21 +22,21 @@ type StatusChangeEmailProps = {
 }
 
 const statusLabels: Record<string, string> = {
-  pending: 'Pending Review',
+  open: 'Open',
   under_review: 'Under Review',
   planned: 'Planned',
   in_progress: 'In Progress',
   completed: 'Completed',
-  declined: 'Declined',
+  closed: 'Closed',
 }
 
 const statusColors: Record<string, string> = {
-  pending: '#6b7280',
+  open: '#6b7280',
   under_review: '#f59e0b',
   planned: '#3b82f6',
   in_progress: '#8b5cf6',
   completed: '#10b981',
-  declined: '#ef4444',
+  closed: '#ef4444',
 }
 
 export const StatusChangeEmail = ({

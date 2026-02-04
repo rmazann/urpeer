@@ -17,7 +17,7 @@ type RoadmapColumnProps = {
 
 const columnColors: Record<string, string> = {
   planned: 'border-t-blue-500',
-  'in-progress': 'border-t-yellow-500',
+  in_progress: 'border-t-yellow-500',
   completed: 'border-t-green-500',
 }
 

@@ -10,7 +10,7 @@ const statusConfig: Record<string, { label: string; className: string }> = {
     label: 'Open',
     className: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
   },
-  'under-review': {
+  under_review: {
     label: 'Under Review',
     className: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
   },
@@ -18,7 +18,7 @@ const statusConfig: Record<string, { label: string; className: string }> = {
     label: 'Planned',
     className: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300',
   },
-  'in-progress': {
+  in_progress: {
     label: 'In Progress',
     className: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300',
   },
@@ -26,8 +26,8 @@ const statusConfig: Record<string, { label: string; className: string }> = {
     label: 'Completed',
     className: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
   },
-  declined: {
-    label: 'Declined',
+  closed: {
+    label: 'Closed',
     className: 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300',
   },
 }
